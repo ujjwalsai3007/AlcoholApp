@@ -23,6 +23,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.alcoholapp.data.ApiService
+import com.example.alcoholapp.data.repository.HomeRepository
+import com.example.alcoholapp.presentation.ui.home.HomeScreen
+import com.example.alcoholapp.presentation.ui.home.HomeViewModel
+import com.example.alcoholapp.presentation.ui.home.HomeViewModelFactory
 import com.example.alcoholapp.ui.theme.AlcoholAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,14 +37,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AlcoholAppTheme {
-                MainScreen()
+                val apiService = ApiService() // baseUrl = "http://10.0.2.2:8080"
+                val repository = HomeRepository(apiService)
+                val homeViewModel: HomeViewModel = viewModel(
+                    factory = HomeViewModelFactory(repository)
+                )
+                MainScreen(homeViewModel)
+
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(homeViewModel: HomeViewModel) {
     var selectedItem by remember { mutableStateOf(0) }
     val items = listOf("Home", "Search", "Order", "Profile")
 
@@ -68,7 +80,7 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         when (selectedItem) {
-            0 -> HomeScreen(modifier = Modifier.padding(innerPadding))
+            0 -> HomeScreen(viewModel = homeViewModel)
             1 -> SearchScreen(modifier = Modifier.padding(innerPadding))
             2 -> OrderScreen(modifier = Modifier.padding(innerPadding))
             3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
@@ -76,10 +88,11 @@ fun MainScreen() {
     }
 }
 
-@Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    Text(text = "Home Screen", modifier = modifier)
-}
+// This simple HomeScreen is replaced by the actual HomeScreen from presentation layer
+// @Composable
+// fun HomeScreen(modifier: Modifier = Modifier) {
+//     Text(text = "Home Screen", modifier = modifier)
+// }
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
@@ -99,7 +112,8 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
+    // Preview can't use the actual ViewModel, so we'll just show a placeholder
     AlcoholAppTheme {
-        MainScreen()
+        Text(text = "Main Screen Preview")
     }
 }
