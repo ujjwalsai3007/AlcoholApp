@@ -1,9 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+    
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21")
         classpath("org.jetbrains.kotlin:kotlin-serialization:1.9.21")
@@ -19,4 +16,8 @@ plugins {
     id("com.android.application") version "8.2.0" apply false
     id("org.jetbrains.kotlin.android") version "1.9.21" apply false
     id("org.jetbrains.compose") version "1.5.11" apply false
+}
+
+allprojects {
+    
 }

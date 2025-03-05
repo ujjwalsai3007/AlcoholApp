@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -16,16 +17,21 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.alcoholapp.data.ApiService
 import com.example.alcoholapp.data.repository.HomeRepository
+import com.example.alcoholapp.domain.model.Category
+import com.example.alcoholapp.presentation.ui.category.CategoryDetailScreen
+import com.example.alcoholapp.presentation.ui.category.CategoryViewModel
+import com.example.alcoholapp.presentation.ui.category.CategoryViewModelFactory
 import com.example.alcoholapp.presentation.ui.home.HomeScreen
 import com.example.alcoholapp.presentation.ui.home.HomeViewModel
 import com.example.alcoholapp.presentation.ui.home.HomeViewModelFactory
@@ -37,21 +43,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AlcoholAppTheme {
-                val apiService = ApiService() // baseUrl = "http://10.0.2.2:8080"
+                val apiService = ApiService()
                 val repository = HomeRepository(apiService)
                 val homeViewModel: HomeViewModel = viewModel(
                     factory = HomeViewModelFactory(repository)
                 )
-                MainScreen(homeViewModel)
-
+                val categoryViewModel: CategoryViewModel = viewModel(
+                    factory = CategoryViewModelFactory(apiService)
+                )
+                
+                MainScreen(
+                    homeViewModel = homeViewModel,
+                    categoryViewModel = categoryViewModel
+                )
             }
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MainScreen(homeViewModel: HomeViewModel) {
-    var selectedItem by remember { mutableStateOf(0) }
+fun MainScreen(
+    homeViewModel: HomeViewModel,
+    categoryViewModel: CategoryViewModel
+) {
+    val navController = rememberNavController()
     val items = listOf("Home", "Search", "Order", "Profile")
 
     Scaffold(
@@ -72,27 +88,74 @@ fun MainScreen(homeViewModel: HomeViewModel) {
                             )
                         },
                         label = { Text(item) },
-                        selected = selectedItem == index,
-                        onClick = { selectedItem = index }
+                        selected = when (index) {
+                            0 -> navController.currentDestination?.route?.startsWith("home") == true
+                            1 -> navController.currentDestination?.route == "search"
+                            2 -> navController.currentDestination?.route == "order"
+                            3 -> navController.currentDestination?.route == "profile"
+                            else -> false
+                        },
+                        onClick = {
+                            when (index) {
+                                0 -> navController.navigate("home") {
+                                    popUpTo("home") { inclusive = true }
+                                }
+                                1 -> navController.navigate("search") {
+                                    popUpTo("home")
+                                }
+                                2 -> navController.navigate("order") {
+                                    popUpTo("home")
+                                }
+                                3 -> navController.navigate("profile") {
+                                    popUpTo("home")
+                                }
+                            }
+                        }
                     )
                 }
             }
         }
     ) { innerPadding ->
-        when (selectedItem) {
-            0 -> HomeScreen(viewModel = homeViewModel)
-            1 -> SearchScreen(modifier = Modifier.padding(innerPadding))
-            2 -> OrderScreen(modifier = Modifier.padding(innerPadding))
-            3 -> ProfileScreen(modifier = Modifier.padding(innerPadding))
+        NavHost(
+            navController = navController,
+            startDestination = "home",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("home") {
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    onCategoryClick = { category ->
+                        homeViewModel.selectCategory(category)
+                        navController.navigate("category/${category.id}")
+                    }
+                )
+            }
+            composable("category/{categoryId}") { backStackEntry ->
+                val category = homeViewModel.selectedCategory.collectAsState().value
+                if (category != null) {
+                    CategoryDetailScreen(
+                        categoryName = category.name,
+                        products = homeViewModel.categoryProducts.collectAsState().value,
+                        onAddToCart = { /* Implement cart functionality */ },
+                        onBackClick = {
+                            homeViewModel.clearSelectedCategory()
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
+            composable("search") {
+                SearchScreen()
+            }
+            composable("order") {
+                OrderScreen()
+            }
+            composable("profile") {
+                ProfileScreen()
+            }
         }
     }
 }
-
-// This simple HomeScreen is replaced by the actual HomeScreen from presentation layer
-// @Composable
-// fun HomeScreen(modifier: Modifier = Modifier) {
-//     Text(text = "Home Screen", modifier = modifier)
-// }
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
@@ -112,7 +175,6 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    // Preview can't use the actual ViewModel, so we'll just show a placeholder
     AlcoholAppTheme {
         Text(text = "Main Screen Preview")
     }

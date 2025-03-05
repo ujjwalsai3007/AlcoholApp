@@ -6,7 +6,9 @@ import kotlinx.serialization.Serializable
 data class HomeResponse(
     val categories: List<Category> = emptyList(),
     val banners: List<Banner> = emptyList(),
-    val featuredProducts: List<Product> = emptyList()
+    val brands: List<Brand> = emptyList(),
+    val limitedEditionProducts: List<Product> = emptyList(),
+    val categoryProducts: Map<String, List<Product>> = emptyMap()
 )
 
 @Serializable
@@ -25,9 +27,20 @@ data class Banner(
 
 @Serializable
 data class Product(
-    val id: Int,
+    val id: String,
     val name: String,
+    val description: String,
     val price: Double,
     val imageUrl: String,
-    val description: String
+    val categoryId: String,
+    val inStock: Boolean = true,
+    val rating: Double = 0.0,
+    val reviewCount: Int = 0
+)
+
+@Serializable
+data class Brand(
+    val id: String,
+    val name: String,
+    val imageUrl: String
 )
