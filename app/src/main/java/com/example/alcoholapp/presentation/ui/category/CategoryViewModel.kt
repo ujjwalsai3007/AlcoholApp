@@ -23,7 +23,7 @@ class CategoryViewModel(private val apiService: ApiService) : ViewModel() {
             _isLoading.value = true
             try {
                 val response = apiService.getProductsByCategory(categoryName)
-                _products.value = response.products
+                _products.value = response
                 _error.value = ""
             } catch (e: Exception) {
                 _error.value = e.message ?: "Failed to load products"

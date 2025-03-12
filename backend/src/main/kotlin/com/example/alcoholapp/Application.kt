@@ -32,8 +32,15 @@ fun main() {
 fun Application.module() {
     // Configure static file serving
     routing {
-        static("/") {
+        static("/static") {
             resources("static")
+            staticRootFolder = File("backend/src/main/resources")
+            files("static")
+            route("images") {
+                static("images") {
+                    resources("static/images")
+                }
+            }
         }
     }
 
@@ -42,6 +49,8 @@ fun Application.module() {
         anyHost()
         allowHeader("Content-Type")
         allowHeader(HttpHeaders.ContentDisposition)
+        allowHeader(HttpHeaders.Accept)
+        allowHeader(HttpHeaders.Authorization)
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Put)
@@ -59,9 +68,20 @@ fun Application.module() {
     }
 
     routing {
+        get("/test-image") {
+            call.respondText("Static file serving is configured")
+        }
+
         get("/api/home") {
-            val homeDataService = HomeDataService()
-            call.respond(homeDataService.getHomeData())
+            try {
+                val homeDataService = HomeDataService()
+                val homeData = homeDataService.getHomeData()
+                call.respond(homeData)
+            } catch (e: Exception) {
+                println("Error serving home data: ${e.message}")
+                e.printStackTrace()
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to e.message))
+            }
         }
         
         get("/api/products/{category}") {

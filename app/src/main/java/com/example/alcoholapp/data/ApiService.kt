@@ -48,8 +48,8 @@ class ApiService {
 
     suspend fun getHomeData(): HomeResponse {
         return try {
-            println("Fetching home data from $baseUrl/home")
-            client.get("$baseUrl/home").body()
+            println("Fetching home data from $baseUrl/api/home")
+            client.get("$baseUrl/api/home").body()
         } catch (e: Exception) {
             println("Error fetching home data: ${e.message}")
             throw e
@@ -59,7 +59,7 @@ class ApiService {
     suspend fun getProductsByCategory(category: String): List<Product> {
         return try {
             println("Fetching products for category: $category")
-            client.get("$baseUrl/products/$category").body()
+            client.get("$baseUrl/api/products/$category").body()
         } catch (e: Exception) {
             println("Error fetching products for category $category: ${e.message}")
             throw e

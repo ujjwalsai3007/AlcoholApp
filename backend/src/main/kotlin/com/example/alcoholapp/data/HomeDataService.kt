@@ -26,10 +26,10 @@ class HomeDataService {
                 Brand("5", "Kingfisher", "http://10.0.2.2:8081/static/images/brands/Kingfisher.png"),
                 Brand("6", "McDowell's", "http://10.0.2.2:8081/static/images/brands/McDowells.png"),
                 Brand("7", "RedBull", "http://10.0.2.2:8081/static/images/brands/RedBull.png"),
-                Brand("8", "Bacardi", "http://10.0.2.2:8081/static/images/brands/Bacardi.png")
+                Brand("8", "Bacardi", "http://10.0.2.2:8081/static/images/brands/bacardi.png")
             ),
             banners = listOf(
-                Banner("1", "http://10.0.2.2:8081/static/images/alcoholbanner.png", "https://example.com/promo1")
+                Banner("1", "http://10.0.2.2:8081/static/images/banner1.jpg", "https://example.com/promo1")
             ),
             limitedEditionProducts = listOf(
                 Product(
@@ -63,7 +63,7 @@ class HomeDataService {
                     "Bacardi Gold Reserve",
                     "Limited Edition Rum",
                     45.99,
-                    "http://10.0.2.2:8081/static/images/limited/bacardi-gold.png",
+                    "http://10.0.2.2:8081/static/images/limited/bacardi.png",
                     "5",
                     true,
                     0,
@@ -76,7 +76,7 @@ class HomeDataService {
                     "Taylor's Vintage Port",
                     "Collector's Edition",
                     89.99,
-                    "http://10.0.2.2:8081/static/images/limited/taylors-vintage.png",
+                    "http://10.0.2.2:8081/static/images/limited/taylor.png",
                     "1",
                     true,
                     0,
@@ -89,7 +89,7 @@ class HomeDataService {
                     "Crystal Head Vodka",
                     "Aurora Special Edition",
                     65.99,
-                    "http://10.0.2.2:8081/static/images/limited/crystal-head.png",
+                    "http://10.0.2.2:8081/static/images/limited/vodka.png",
                     "4",
                     true,
                     0,
@@ -102,85 +102,85 @@ class HomeDataService {
                 "1" to listOf( // Wine
                     Product(
                         "w1", "Cabernet Sauvignon", "Rich, full-bodied red wine", 
-                        24.99, "http://10.0.2.2:8081/static/images/wine/cabernet.png", "1",
+                        24.99, "http://10.0.2.2:8081/static/images/wines/wine1.png", "1",
                         true, 0, 4.4, 89
                     ),
                     Product(
                         "w2", "Chardonnay", "Classic white wine", 
-                        19.99, "http://10.0.2.2:8081/static/images/wine/chardonnay.png", "1",
+                        19.99, "http://10.0.2.2:8081/static/images/wines/wine2.png", "1",
                         true, 0, 4.2, 76
                     ),
                     Product(
                         "w3", "Merlot", "Smooth red wine", 
-                        22.99, "http://10.0.2.2:8081/static/images/wine/merlot.png", "1",
+                        22.99, "http://10.0.2.2:8081/static/images/wines/wine3.png", "1",
                         true, 0, 4.3, 92
                     )
                 ),
                 "2" to listOf( // Beer
                     Product(
                         "b1", "Corona Extra", "Mexican pale lager", 
-                        8.99, "http://10.0.2.2:8081/static/images/beer/corona.png", "2",
+                        8.99, "http://10.0.2.2:8081/static/images/Beer/beer1.jpg", "2",
                         true, 0, 4.5, 156
                     ),
                     Product(
                         "b2", "Heineken", "Premium lager beer", 
-                        9.99, "http://10.0.2.2:8081/static/images/beer/heineken.png", "2",
+                        9.99, "http://10.0.2.2:8081/static/images/Beer/beer2.jpg", "2",
                         true, 0, 4.4, 143
                     ),
                     Product(
                         "b3", "Budweiser", "American-style lager", 
-                        7.99, "http://10.0.2.2:8081/static/images/beer/budweiser.png", "2",
+                        7.99, "http://10.0.2.2:8081/static/images/Beer/beer3.jpg", "2",
                         true, 0, 4.3, 178
                     )
                 ),
                 "3" to listOf( // Whiskey
                     Product(
                         "wh1", "Jack Daniel's", "Tennessee whiskey", 
-                        29.99, "http://10.0.2.2:8081/static/images/whiskey/jackdaniels.png", "3",
+                        29.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey1.jpg", "3",
                         true, 0, 4.6, 234
                     ),
                     Product(
                         "wh2", "Jameson", "Irish whiskey", 
-                        27.99, "http://10.0.2.2:8081/static/images/whiskey/jameson.png", "3",
+                        27.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey2.jpg", "3",
                         true, 0, 4.5, 198
                     ),
                     Product(
                         "wh3", "Glenfiddich", "Single malt scotch", 
-                        45.99, "http://10.0.2.2:8081/static/images/whiskey/glenfiddich.png", "3",
+                        45.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey3.jpg", "3",
                         true, 0, 4.7, 167
                     )
                 ),
                 "4" to listOf( // Vodka
                     Product(
                         "v1", "Grey Goose", "French vodka", 
-                        32.99, "http://10.0.2.2:8081/static/images/vodka/greygoose.png", "4",
+                        32.99, "http://10.0.2.2:8081/static/images/vodka/vodka1.png", "4",
                         true, 0, 4.5, 189
                     ),
                     Product(
                         "v2", "Absolut", "Swedish vodka", 
-                        24.99, "http://10.0.2.2:8081/static/images/vodka/absolut.png", "4",
+                        24.99, "http://10.0.2.2:8081/static/images/vodka/vodka2.png", "4",
                         true, 0, 4.4, 176
                     ),
                     Product(
                         "v3", "Belvedere", "Polish vodka", 
-                        36.99, "http://10.0.2.2:8081/static/images/vodka/belvedere.png", "4",
+                        36.99, "http://10.0.2.2:8081/static/images/vodka/vodka3.png", "4",
                         true, 0, 4.6, 145
                     )
                 ),
                 "5" to listOf( // Rum
                     Product(
                         "r1", "Captain Morgan", "Spiced rum", 
-                        19.99, "http://10.0.2.2:8081/static/images/rum/captainmorgan.png", "5",
+                        19.99, "http://10.0.2.2:8081/static/images/rum/rum1.png", "5",
                         true, 0, 4.3, 212
                     ),
                     Product(
                         "r2", "Malibu", "Coconut rum", 
-                        17.99, "http://10.0.2.2:8081/static/images/rum/malibu.png", "5",
+                        17.99, "http://10.0.2.2:8081/static/images/rum/rum2.png", "5",
                         true, 0, 4.2, 187
                     ),
                     Product(
                         "r3", "Havana Club", "Cuban rum", 
-                        23.99, "http://10.0.2.2:8081/static/images/rum/havanaclub.png", "5",
+                        23.99, "http://10.0.2.2:8081/static/images/rum/rum3.png", "5",
                         true, 0, 4.5, 156
                     )
                 )

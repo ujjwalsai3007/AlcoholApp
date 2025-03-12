@@ -12,29 +12,29 @@ class ProductService {
     fun getProductsByCategory(categoryName: String): CategoryProductsResponse {
         val products = when (categoryName.lowercase()) {
             "wine" -> listOf(
-                Product("1", "Red Wine", "Premium red wine", 29.99, "http://10.0.2.2:8081/images/wines/wine1.png", "1"),
-                Product("2", "White Wine", "Crisp white wine", 24.99, "http://10.0.2.2:8081/images/wines/wine2.png", "1"),
-                Product("3", "Rose Wine", "Refreshing rose wine", 19.99, "http://10.0.2.2:8081/images/wines/wine3.png", "1")
+                Product("w1", "Cabernet Sauvignon", "Rich, full-bodied red wine", 24.99, "http://10.0.2.2:8081/static/images/wines/wine1.jpg", "1", true, 0, 4.4, 89),
+                Product("w2", "Chardonnay", "Classic white wine", 19.99, "http://10.0.2.2:8081/static/images/wines/wine2.jpg", "1", true, 0, 4.2, 76),
+                Product("w3", "Merlot", "Smooth red wine", 22.99, "http://10.0.2.2:8081/static/images/wines/wine3.jpg", "1", true, 0, 4.3, 92)
             )
             "beer" -> listOf(
-                Product("4", "Lager Beer", "Classic lager", 8.99, "http://10.0.2.2:8081/images/Beer/beer1.png", "2"),
-                Product("5", "IPA Beer", "Hoppy IPA", 9.99, "http://10.0.2.2:8081/images/Beer/beer2.png", "2"),
-                Product("6", "Stout Beer", "Rich stout", 7.99, "http://10.0.2.2:8081/images/Beer/beer3.png", "2")
+                Product("b1", "Corona Extra", "Mexican pale lager", 8.99, "http://10.0.2.2:8081/static/images/Beer/beer1.jpg", "2", true, 0, 4.5, 156),
+                Product("b2", "Heineken", "Premium lager beer", 9.99, "http://10.0.2.2:8081/static/images/Beer/beer2.jpg", "2", true, 0, 4.4, 143),
+                Product("b3", "Budweiser", "American-style lager", 7.99, "http://10.0.2.2:8081/static/images/Beer/beer3.jpg", "2", true, 0, 4.3, 178)
             )
             "whiskey" -> listOf(
-                Product("7", "Single Malt", "Premium single malt", 59.99, "http://10.0.2.2:8081/images/Whiskey/whiskey1.png", "3"),
-                Product("8", "Bourbon", "Kentucky bourbon", 49.99, "http://10.0.2.2:8081/images/Whiskey/whiskey2.png", "3"),
-                Product("9", "Scotch", "Aged scotch", 69.99, "http://10.0.2.2:8081/images/Whiskey/whiskey3.png", "3")
+                Product("wh1", "Jack Daniel's", "Tennessee whiskey", 29.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey1.jpg", "3", true, 0, 4.6, 234),
+                Product("wh2", "Jameson", "Irish whiskey", 27.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey2.jpg", "3", true, 0, 4.5, 198),
+                Product("wh3", "Glenfiddich", "Single malt scotch", 45.99, "http://10.0.2.2:8081/static/images/Whiskey/whiskey3.jpg", "3", true, 0, 4.7, 167)
             )
             "vodka" -> listOf(
-                Product("10", "Classic Vodka", "Pure vodka", 34.99, "http://10.0.2.2:8081/images/vodka/vodka1.png", "4"),
-                Product("11", "Flavored Vodka", "Infused vodka", 29.99, "http://10.0.2.2:8081/images/vodka/vodka2.png", "4"),
-                Product("12", "Premium Vodka", "Top shelf vodka", 44.99, "http://10.0.2.2:8081/images/vodka/vodka3.png", "4")
+                Product("v1", "Grey Goose", "French vodka", 32.99, "http://10.0.2.2:8081/static/images/vodka/vodka1.jpg", "4", true, 0, 4.5, 189),
+                Product("v2", "Absolut", "Swedish vodka", 24.99, "http://10.0.2.2:8081/static/images/vodka/vodka2.jpg", "4", true, 0, 4.4, 176),
+                Product("v3", "Belvedere", "Polish vodka", 36.99, "http://10.0.2.2:8081/static/images/vodka/vodka3.jpg", "4", true, 0, 4.6, 145)
             )
             "rum" -> listOf(
-                Product("13", "Dark Rum", "Aged dark rum", 27.99, "http://10.0.2.2:8081/images/rum/rum1.png", "5"),
-                Product("14", "Spiced Rum", "Caribbean spiced rum", 25.99, "http://10.0.2.2:8081/images/rum/rum2.png", "5"),
-                Product("15", "White Rum", "Light white rum", 22.99, "http://10.0.2.2:8081/images/rum/rum3.png", "5")
+                Product("r1", "Captain Morgan", "Spiced rum", 19.99, "http://10.0.2.2:8081/static/images/rum/rum1.jpg", "5", true, 0, 4.3, 212),
+                Product("r2", "Malibu", "Coconut rum", 17.99, "http://10.0.2.2:8081/static/images/rum/rum2.jpg", "5", true, 0, 4.2, 187),
+                Product("r3", "Havana Club", "Cuban rum", 23.99, "http://10.0.2.2:8081/static/images/rum/rum3.jpg", "5", true, 0, 4.5, 156)
             )
             else -> emptyList()
         }

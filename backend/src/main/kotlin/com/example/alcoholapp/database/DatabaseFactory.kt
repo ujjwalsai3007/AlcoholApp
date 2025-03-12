@@ -9,10 +9,9 @@ object DatabaseFactory {
     fun init() {
         // Configure Hikari connection pool
         val config = HikariConfig().apply {
-            driverClassName = "org.postgresql.Driver"
-            jdbcUrl = System.getenv("DATABASE_URL") ?: "jdbc:postgresql://localhost:5432/alcoholapp"
-            username = System.getenv("DATABASE_USER") ?: "postgres"
-            password = System.getenv("DATABASE_PASSWORD") ?: "postgres"
+            driverClassName = "org.sqlite.JDBC"
+            jdbcUrl = "jdbc:sqlite:alcoholapp.db"
+            maximumPoolSize = 1
             maximumPoolSize = 3
             isAutoCommit = false
             transactionIsolation = "TRANSACTION_REPEATABLE_READ"
