@@ -1,25 +1,24 @@
 plugins {
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.21"
-    id("org.springframework.boot") version "3.1.4"
-    id("io.spring.dependency-management") version "1.1.3"
+    kotlin("plugin.serialization")
+    application
 }
 
-group = "com.example"
-version = "1.0-SNAPSHOT"
+application {
+    mainClass.set("com.example.alcoholapp.ApplicationKt")
+}
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-kotlin {
-    jvmToolchain(17)
+    implementation("io.ktor:ktor-server-core:2.3.7")
+    implementation("io.ktor:ktor-server-netty:2.3.7")
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    implementation("io.ktor:ktor-server-cors:2.3.7")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("org.xerial:sqlite-jdbc:3.42.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 }
