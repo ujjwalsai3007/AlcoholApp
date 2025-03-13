@@ -13,3 +13,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+backend/build/
+backend/build/libs/
+backend/build/distributions/
+*.jar
+*.zip
+*.tar
+*.pack
