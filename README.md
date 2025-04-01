@@ -54,8 +54,17 @@ A modern Android application for browsing, searching, and ordering alcoholic bev
 - Kotlin Coroutines and Flow for asynchronous operations
 
 ## Screenshots
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2a912d36-858c-49c8-9c6b-8383d5c480aa" width="200" />
+  <img src="https://github.com/user-attachments/assets/15384900-f9ea-4bd9-b65c-338494e9e046" width="200" />
+  <img src="https://github.com/user-attachments/assets/cb1ec800-6104-4e44-a610-356e4642292a" width="200" />
+  <img src="https://github.com/user-attachments/assets/f0ee8505-a6db-4e58-add4-f3b963484bb2" width="200" />
+  <img src="https://github.com/user-attachments/assets/0244918d-ccbe-4e25-9ac2-358ad6428e17" width="200" />
+</p>
 
-[Include screenshots of key screens here]
+
+
+
 
 ## Getting Started
 
