@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.alcoholapp.data.CartManager
 import com.example.alcoholapp.data.repository.HomeRepository
 import com.example.alcoholapp.domain.model.HomeResponse
 import com.example.alcoholapp.domain.model.Category
@@ -32,6 +33,8 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     private val preloadedCategories = mutableSetOf<String>()
     private val categoryProductsCache = mutableMapOf<String, List<Product>>()
+    
+    private val cartManager = CartManager.getInstance()
 
     fun getCategoryProducts(categoryId: String): List<Product> {
         return categoryProductsCache[categoryId] ?: emptyList()
@@ -102,5 +105,17 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     fun clearSelectedCategory() {
         _selectedCategory.value = null
         _categoryProducts.value = emptyList()
+    }
+    
+    fun addToCart(product: Product) {
+        cartManager.addToCart(product)
+    }
+
+    fun getCartQuantity(productId: String): Int {
+        return cartManager.getCartItemForProduct(productId)?.quantity ?: 0
+    }
+
+    fun isProductInCart(productId: String): Boolean {
+        return cartManager.getCartItemForProduct(productId) != null
     }
 }

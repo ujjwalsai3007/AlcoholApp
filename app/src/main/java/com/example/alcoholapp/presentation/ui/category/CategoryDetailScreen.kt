@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.alcoholapp.data.CartManager
 import com.example.alcoholapp.domain.model.Product
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,10 +91,6 @@ fun ProductCard(product: Product, onAddToCart: (Product) -> Unit) {
     var isImageLoading by remember { mutableStateOf(true) }
     var isImageError by remember { mutableStateOf(false) }
 
-    LaunchedEffect(product.imageUrl) {
-        println("DEBUG: Loading image from URL: ${product.imageUrl}")
-    }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,19 +121,14 @@ fun ProductCard(product: Product, onAddToCart: (Product) -> Unit) {
                         .fillMaxSize()
                         .padding(12.dp),
                     contentScale = ContentScale.Fit,
-                    onLoading = { 
-                        isImageLoading = true
-                        println("DEBUG: Started loading image for ${product.name}")
-                    },
+                    onLoading = { isImageLoading = true },
                     onSuccess = { 
                         isImageLoading = false
                         isImageError = false
-                        println("DEBUG: Successfully loaded image for ${product.name}")
                     },
                     onError = { 
                         isImageLoading = false
                         isImageError = true
-                        println("DEBUG: Error loading image for ${product.name} from ${product.imageUrl}")
                     }
                 )
                 

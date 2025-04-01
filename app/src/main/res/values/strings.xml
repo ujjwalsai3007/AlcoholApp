@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AlcoholApp</string>
+    <!-- This is a placeholder. The actual value will be automatically populated by the Firebase plugin -->
+    <string name="default_web_client_id">1033500519772-dh8onqsd3l7dmal3b92o5gq45o1ei4uu.apps.googleusercontent.com</string>
 </resources>

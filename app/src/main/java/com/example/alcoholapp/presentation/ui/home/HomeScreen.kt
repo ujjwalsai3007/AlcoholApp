@@ -1,5 +1,6 @@
 package com.example.alcoholapp.presentation.ui.home
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,8 +16,10 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -25,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +37,7 @@ import com.example.alcoholapp.R
 import com.example.alcoholapp.domain.model.Category
 import com.example.alcoholapp.domain.model.Product
 import com.example.alcoholapp.domain.model.Brand
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -120,7 +125,11 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(homeData?.limitedEditionProducts ?: emptyList()) { product ->
-                            LimitedEditionItem(product = product)
+                            LimitedEditionItem(
+                                product = product,
+                                onAddToCart = { viewModel.addToCart(product) },
+                                cartQuantity = viewModel.getCartQuantity(product.id)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -131,9 +140,30 @@ fun HomeScreen(
 }
 
 @Composable
-fun LimitedEditionItem(product: Product) {
+fun LimitedEditionItem(
+    product: Product,
+    onAddToCart: () -> Unit,
+    cartQuantity: Int
+) {
     var isImageLoading by remember { mutableStateOf(true) }
     var isImageError by remember { mutableStateOf(false) }
+    var quantity by remember { mutableStateOf(cartQuantity) }
+    var showConfirmation by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    // Update local quantity if cart quantity changes
+    LaunchedEffect(cartQuantity) {
+        quantity = cartQuantity
+    }
+    
+    // Handle confirmation message
+    LaunchedEffect(showConfirmation) {
+        if (showConfirmation) {
+            Toast.makeText(context, "${product.name} added to cart", Toast.LENGTH_SHORT).show()
+            delay(2000)
+            showConfirmation = false
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -154,7 +184,7 @@ fun LimitedEditionItem(product: Product) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
+                    .height(140.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color(0xFFF5F5F5)),
                 contentAlignment = Alignment.Center
@@ -208,7 +238,7 @@ fun LimitedEditionItem(product: Product) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = product.name,
@@ -228,7 +258,7 @@ fun LimitedEditionItem(product: Product) {
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -237,27 +267,80 @@ fun LimitedEditionItem(product: Product) {
             ) {
                 Text(
                     text = "$${product.price}",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Card(
-                    shape = CircleShape,
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    ),
-                    modifier = Modifier.size(32.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                if (quantity == 0) {
+                    Button(
+                        onClick = { 
+                            quantity = 1
+                            onAddToCart()
+                            showConfirmation = true
+                        },
+                        shape = RoundedCornerShape(8.dp),
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = Icons.Default.AddShoppingCart,
                             contentDescription = "Add to cart",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(16.dp)
                         )
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                RoundedCornerShape(8.dp)
+                            )
+                            .padding(horizontal = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { 
+                                quantity = (quantity - 1).coerceAtLeast(0)
+                                if (quantity == 0) {
+                                    // Reset to add button state
+                                } else {
+                                    onAddToCart()
+                                    showConfirmation = true
+                                }
+                            },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Remove,
+                                contentDescription = "Remove item",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                        
+                        Text(
+                            text = quantity.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                        
+                        IconButton(
+                            onClick = { 
+                                quantity++
+                                onAddToCart()
+                                showConfirmation = true 
+                            },
+                            modifier = Modifier.size(24.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = "Add item",
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
                 }
             }
