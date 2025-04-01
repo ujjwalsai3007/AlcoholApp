@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1033500519772",
+    "project_id": "alcoholapp-13cbe",
+    "storage_bucket": "alcoholapp-13cbe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033500519772:android:77070ec89e885e30afe599",
+        "android_client_info": {
+          "package_name": "com.example.alcoholapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1033500519772-njcid9l4oouul0frcvuri8bimrt2hvrj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alcoholapp",
+            "certificate_hash": "09d0e921a537fdc35cc4dc1d9d0efa145c2b201f"
+          }
+        },
+        {
+          "client_id": "1033500519772-dh8onqsd3l7dmal3b92o5gq45o1ei4uu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLPhAJFY_35vpGfI21LOiDyuSaXhEAJ4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1033500519772-dh8onqsd3l7dmal3b92o5gq45o1ei4uu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,7 @@
 package com.example.alcoholapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -27,15 +28,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.alcoholapp.data.ApiService
+import com.example.alcoholapp.data.CartManager
+import com.example.alcoholapp.data.FirebaseAuthManager
 import com.example.alcoholapp.data.repository.HomeRepository
 import com.example.alcoholapp.domain.model.Category
+import com.example.alcoholapp.presentation.ui.auth.LoginScreen
 import com.example.alcoholapp.presentation.ui.category.CategoryDetailScreen
 import com.example.alcoholapp.presentation.ui.category.CategoryViewModel
 import com.example.alcoholapp.presentation.ui.category.CategoryViewModelFactory
 import com.example.alcoholapp.presentation.ui.home.HomeScreen
 import com.example.alcoholapp.presentation.ui.home.HomeViewModel
 import com.example.alcoholapp.presentation.ui.home.HomeViewModelFactory
+import com.example.alcoholapp.presentation.ui.order.OrderScreen
+import com.example.alcoholapp.presentation.ui.search.SearchScreen
 import com.example.alcoholapp.ui.theme.AlcoholAppTheme
+import kotlinx.coroutines.flow.first
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +55,31 @@ class MainActivity : ComponentActivity() {
                 val homeViewModel: HomeViewModel = viewModel(
                     factory = HomeViewModelFactory(repository)
                 )
-                val categoryViewModel: CategoryViewModel = viewModel(
-                    factory = CategoryViewModelFactory(apiService)
-                )
                 
-                MainScreen(
-                    homeViewModel = homeViewModel,
-                    categoryViewModel = categoryViewModel
-                )
+                var isLoggedIn by remember { mutableStateOf(false) }
+                
+                // Check initial login state
+                LaunchedEffect(Unit) {
+                    try {
+                        val authManager = FirebaseAuthManager.getInstance()
+                        val currentUser = authManager.currentUser.first()
+                        isLoggedIn = currentUser != null
+                        Log.d("MainActivity", "Initial login state: $isLoggedIn")
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Error checking login state", e)
+                    }
+                }
+                
+                if (isLoggedIn) {
+                    MainScreen(homeViewModel = homeViewModel)
+                } else {
+                    LoginScreen(
+                        onLoginSuccess = { 
+                            Log.d("MainActivity", "Login successful")
+                            isLoggedIn = true 
+                        }
+                    )
+                }
             }
         }
     }
@@ -64,11 +88,13 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel,
-    categoryViewModel: CategoryViewModel
+    homeViewModel: HomeViewModel
 ) {
     val navController = rememberNavController()
     val items = listOf("Home", "Search", "Order", "Profile")
+    val cartManager = CartManager.getInstance()
+    val cartItemCount by cartManager.totalItems.collectAsState()
+    val apiService = remember { ApiService() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -87,7 +113,13 @@ fun MainScreen(
                                 contentDescription = item
                             )
                         },
-                        label = { Text(item) },
+                        label = { 
+                            if (index == 2 && cartItemCount > 0) {
+                                Text("Order ($cartItemCount)")
+                            } else {
+                                Text(item)
+                            }
+                        },
                         selected = when (index) {
                             0 -> navController.currentDestination?.route?.startsWith("home") == true
                             1 -> navController.currentDestination?.route == "search"
@@ -130,13 +162,15 @@ fun MainScreen(
                     }
                 )
             }
-            composable("category/{categoryId}") { backStackEntry ->
+            composable("category/{categoryId}") { _ ->
                 val category = homeViewModel.selectedCategory.collectAsState().value
                 if (category != null) {
                     CategoryDetailScreen(
                         categoryName = category.name,
                         products = homeViewModel.categoryProducts.collectAsState().value,
-                        onAddToCart = { /* Implement cart functionality */ },
+                        onAddToCart = { product -> 
+                            cartManager.addToCart(product)
+                        },
                         onBackClick = {
                             homeViewModel.clearSelectedCategory()
                             navController.popBackStack()
@@ -155,16 +189,6 @@ fun MainScreen(
             }
         }
     }
-}
-
-@Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
-    Text(text = "Search Screen", modifier = modifier)
-}
-
-@Composable
-fun OrderScreen(modifier: Modifier = Modifier) {
-    Text(text = "Order Screen", modifier = modifier)
 }
 
 @Composable
