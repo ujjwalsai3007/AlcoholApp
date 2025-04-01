@@ -28,12 +28,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alcoholapp.R
 import com.example.alcoholapp.domain.model.ProfileActionType
 import com.example.alcoholapp.domain.model.ProfileSection
+import androidx.lifecycle.ViewModelProvider
 
 @Composable
 fun ProfileScreen(
-    onNavigateToSection: (ProfileActionType) -> Unit,
-    onSignOut: () -> Unit,
-    viewModelFactory: ProfileViewModelFactory
+    modifier: Modifier = Modifier,
+    onNavigateToSection: (ProfileActionType) -> Unit = {},
+    onSignOut: () -> Unit = {},
+    viewModelFactory: ViewModelProvider.Factory? = null
 ) {
     val viewModel: ProfileViewModel = viewModel(factory = viewModelFactory)
     val context = LocalContext.current
@@ -212,5 +214,17 @@ fun ProfileSectionItem(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+@Composable
+private fun SignOutCard(onSignOut: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { onSignOut() }
+    ) {
+        // ... existing code ...
     }
 } 

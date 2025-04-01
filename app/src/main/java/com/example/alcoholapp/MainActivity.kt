@@ -57,49 +57,73 @@ import kotlinx.coroutines.flow.first
 import com.example.alcoholapp.presentation.ui.profile.ProfileScreen as ProfileScreenMain
 
 class MainActivity : ComponentActivity() {
-    // Add a composable state that can be updated from other composables
-    private val _isLoggedIn = mutableStateOf(false)
-    private val isLoggedIn: Boolean
-        get() = _isLoggedIn.value
-        
-    fun onUserSignedOut() {
-        _isLoggedIn.value = false
-        Log.d("MainActivity", "User signed out, updating login state: ${_isLoggedIn.value}")
-    }
-
+    
+    private var authManager: FirebaseAuthManager? = null
+    
+    // Track whether we're showing login screen or main screen
+    private val _showLoginScreen = mutableStateOf(true)
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        // Initialize auth manager
+        authManager = FirebaseAuthManager.getInstance()
+        
+        // Initial auth check
+        val currentUser = authManager?.getCurrentUser()
+        _showLoginScreen.value = currentUser == null
+        
         setContent {
             AlcoholAppTheme {
-                val apiService = ApiService()
-                val repository = HomeRepository(apiService)
-                val homeViewModel: HomeViewModel = viewModel(
+                // Get the application context
+                val context = LocalContext.current
+                
+                // Initialize view models
+                val repository = HomeRepository(ApiService())
+                val homeViewModel = viewModel<HomeViewModel>(
                     factory = HomeViewModelFactory(repository)
                 )
                 
-                // Use the mutableState variable declared above
-                val isLoggedInState by remember { _isLoggedIn }
+                // Observe the login screen state
+                val showLoginScreen by remember { _showLoginScreen }
                 
-                // Check initial login state
-                LaunchedEffect(Unit) {
-                    try {
-                        val authManager = FirebaseAuthManager.getInstance()
-                        val currentUser = authManager.currentUser.first()
-                        _isLoggedIn.value = currentUser != null
-                        Log.d("MainActivity", "Initial login state: ${_isLoggedIn.value}")
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "Error checking login state", e)
-                    }
-                }
-                
-                if (isLoggedInState) {
-                    MainScreen(homeViewModel = homeViewModel)
+                if (!showLoginScreen) {
+                    MainScreen(
+                        homeViewModel = homeViewModel,
+                        onSignOut = {
+                            Log.d("MainActivity", "Sign out requested from MainScreen")
+                            
+                            // 1. Sign out from Firebase
+                            authManager?.signOut()
+                            
+                            // 2. Clear any app-specific state (carts, etc)
+                            CartManager.getInstance().clearCart()
+                            
+                            // 3. Show feedback to user
+                            Toast.makeText(context, "Signed out successfully", Toast.LENGTH_SHORT).show()
+                            
+                            // 4. IMPORTANT: Force show login screen by setting state directly
+                            _showLoginScreen.value = true
+                            
+                            // 5. Force UI refresh by calling setContent again
+                            setContent {
+                                AlcoholAppTheme {
+                                    LoginScreen(
+                                        onLoginSuccess = { 
+                                            Log.d("MainActivity", "Login successful")
+                                            _showLoginScreen.value = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    )
                 } else {
                     LoginScreen(
                         onLoginSuccess = { 
                             Log.d("MainActivity", "Login successful")
-                            _isLoggedIn.value = true 
+                            _showLoginScreen.value = false
                         }
                     )
                 }
@@ -111,13 +135,13 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    onSignOut: () -> Unit
 ) {
     val navController = rememberNavController()
     val items = listOf("Home", "Search", "Order", "Profile")
     val cartManager = CartManager.getInstance()
     val cartItemCount by cartManager.totalItems.collectAsState()
-    val apiService = remember { ApiService() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -208,28 +232,17 @@ fun MainScreen(
                 OrderScreen()
             }
             composable("profile") {
-                ProfileScreen()
+                ProfileScreen(onSignOut = onSignOut)
             }
         }
     }
 }
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(modifier: Modifier = Modifier, onSignOut: () -> Unit) {
     val context = LocalContext.current
     val viewModelFactory = remember { ProfileViewModelFactory(context) }
     val navController = rememberNavController()
-    
-    // Create a mutable state to track sign-out status
-    val hasSignedOut = remember { mutableStateOf(false) }
-    
-    // Handle sign-out effect
-    LaunchedEffect(hasSignedOut.value) {
-        if (hasSignedOut.value) {
-            // This callback forces the MainActivity to re-check login state
-            (context as? MainActivity)?.onUserSignedOut()
-        }
-    }
     
     NavHost(
         navController = navController,
@@ -253,11 +266,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                         }
                     }
                 },
-                onSignOut = {
-                    // Set the sign-out flag to trigger the LaunchedEffect
-                    hasSignedOut.value = true
-                    Toast.makeText(context, "Signed out", Toast.LENGTH_SHORT).show()
-                },
+                onSignOut = onSignOut,
                 viewModelFactory = viewModelFactory
             )
         }

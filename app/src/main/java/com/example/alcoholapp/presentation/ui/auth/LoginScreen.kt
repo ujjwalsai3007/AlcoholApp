@@ -112,7 +112,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                    .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -131,13 +131,6 @@ fun LoginScreen(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
-            )
-            
-            Text(
-                text = "Must be 18+ to use this app",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(top = 4.dp)
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -688,30 +681,27 @@ private fun handleGoogleSignInResult(
 }
 
 @Composable
-fun AuthTab(
-    title: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
+private fun AuthTab(title: String, selected: Boolean, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .clickable(onClick = onClick)
+            .clickable { onClick() }
             .padding(8.dp)
     ) {
         Text(
             text = title,
             color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
-        if (selected) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Box(
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(2.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-            )
-        }
+        Box(
+            modifier = Modifier
+                .width(40.dp)
+                .height(3.dp)
+                .background(
+                    color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                    shape = RoundedCornerShape(1.5.dp)
+                )
+        )
     }
 } 

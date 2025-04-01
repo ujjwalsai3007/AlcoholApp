@@ -271,13 +271,15 @@ class ProfileViewModel(private val context: Context) : ViewModel() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
-                authManager.signOut()
-                cartManager.clearCart()
+                // We no longer call Firebase sign out here, just clear local state
+                // It's now handled by MainActivity
+                Log.d(TAG, "ProfileViewModel.signOut() called - UI state cleared")
+                
+                // Still clear local state
                 _userEmail.value = null
                 _userName.value = null
                 _phoneNumber.value = null
                 _isVerified.value = false
-                Log.d(TAG, "User signed out")
             } catch (e: Exception) {
                 Log.e(TAG, "Error signing out", e)
                 _error.value = "Failed to sign out: ${e.message}"
