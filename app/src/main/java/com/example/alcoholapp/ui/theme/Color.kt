@@ -44,3 +44,24 @@ val AccentPurple = Color(0xFF9C27B0)  // Premium features
 val RatingGreen = Color(0xFF48C479)   // High rating
 val RatingOrange = Color(0xFFDB7C38)  // Medium rating
 val RatingRed = Color(0xFFE23744)     // Low rating
+
+// Green Theme Colors
+val DarkGreen = Color(0xFF1B5E20)
+val MediumGreen = Color(0xFF2E7D32)
+val LightGreen = Color(0xFF4CAF50)
+val VeryLightGreen = Color(0xFFA5D6A7)
+val PaleGreen = Color(0xFFE8F5E9)
+
+// Additional Colors
+val Black = Color(0xFF000000)
+val White = Color(0xFFFFFFFF)
+val DarkText = Color(0xFF1B1C17)
+val LightText = Color(0xFFE8F5E9)
+
+// Accent Colors
+val TealGreen = Color(0xFF00BFA5)
+val DarkTeal = Color(0xFF004D40)
+
+// Error Colors
+val ErrorRed = Color(0xFFB71C1C)
+val LightErrorRed = Color(0xFFEF9A9A)

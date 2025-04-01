@@ -25,13 +25,13 @@ class FirebaseAuthManager {
     private val _currentUser = MutableStateFlow<FirebaseUser?>(auth.currentUser)
     val currentUser: StateFlow<FirebaseUser?> = _currentUser.asStateFlow()
     
-    private val _isUserVerified = MutableStateFlow(auth.currentUser?.isEmailVerified == true)
-    val isUserVerified: StateFlow<Boolean> = _isUserVerified.asStateFlow()
+    private val _isEmailVerified = MutableStateFlow(auth.currentUser?.isEmailVerified == true)
+    val isEmailVerified: StateFlow<Boolean> = _isEmailVerified.asStateFlow()
     
     init {
         auth.addAuthStateListener { firebaseAuth ->
             _currentUser.value = firebaseAuth.currentUser
-            _isUserVerified.value = firebaseAuth.currentUser?.isEmailVerified == true
+            _isEmailVerified.value = firebaseAuth.currentUser?.isEmailVerified == true
         }
     }
     
@@ -124,7 +124,11 @@ class FirebaseAuthManager {
     
     // General auth methods
     fun signOut() {
+        Log.d(TAG, "Signing out user: ${auth.currentUser?.email ?: "Unknown"}")
         auth.signOut()
+        _currentUser.value = null
+        _isEmailVerified.value = false
+        Log.d(TAG, "User signed out, current user is now null: ${auth.currentUser == null}")
     }
     
     fun getIntent(): Intent? {
