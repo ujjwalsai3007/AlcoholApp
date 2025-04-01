@@ -135,6 +135,10 @@ class FirebaseAuthManager {
         }
     }
     
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
+    }
+    
     companion object {
         private const val TAG = "FirebaseAuthManager"
         
