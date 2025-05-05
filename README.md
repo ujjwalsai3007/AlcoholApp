@@ -89,8 +89,6 @@ A modern Android application for browsing, searching, and ordering alcoholic bev
 - Enhance recommendation engine based on purchase history
 - Implement push notifications for order updates
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 - Thanks to the Jetpack Compose team for the modern UI toolkit
